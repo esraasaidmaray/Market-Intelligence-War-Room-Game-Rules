@@ -1,0 +1,453 @@
+{
+    "name": "CompanyReference",
+    "type": "object",
+    "properties": {
+      "company_name": {
+        "type": "string",
+        "description": "Official company name"
+      },
+      "company_description": {
+        "type": "string",
+        "description": "Brief description of the company"
+      },
+      "battle_1_leadership": {
+        "type": "object",
+        "properties": {
+          "founders": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "full_name": {
+                  "type": "string"
+                },
+                "founding_year": {
+                  "type": "string"
+                },
+                "current_role": {
+                  "type": "string"
+                },
+                "previous_ventures": {
+                  "type": "string"
+                },
+                "linkedin_url": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "key_executives": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "function": {
+                  "type": "string"
+                },
+                "years_with_firm": {
+                  "type": "string"
+                },
+                "linkedin_url": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "market_share": {
+            "type": "object",
+            "properties": {
+              "tam_usd": {
+                "type": "string"
+              },
+              "sam_usd": {
+                "type": "string"
+              },
+              "som_usd": {
+                "type": "string"
+              },
+              "annual_growth_rate": {
+                "type": "string"
+              },
+              "competitive_rank": {
+                "type": "number"
+              },
+              "company_share_percentage": {
+                "type": "string"
+              },
+              "differentiators": {
+                "type": "string"
+              }
+            }
+          },
+          "geographic_footprint": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string"
+                },
+                "opened_year": {
+                  "type": "string"
+                },
+                "facility_type": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "battle_2_products": {
+        "type": "object",
+        "properties": {
+          "product_lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "product_name": {
+                  "type": "string"
+                },
+                "product_type": {
+                  "type": "string"
+                },
+                "launch_date": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string"
+                },
+                "target_segment": {
+                  "type": "string"
+                },
+                "key_features": {
+                  "type": "string"
+                },
+                "pricing_model": {
+                  "type": "string"
+                },
+                "reviews_score": {
+                  "type": "string"
+                },
+                "primary_competitors": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "social_presence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "platform_name": {
+                  "type": "string"
+                },
+                "page_link": {
+                  "type": "string"
+                },
+                "followers": {
+                  "type": "string"
+                },
+                "engagement_rate": {
+                  "type": "string"
+                },
+                "running_ads": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "battle_3_funding": {
+        "type": "object",
+        "properties": {
+          "total_funding": {
+            "type": "object",
+            "properties": {
+              "amount_usd": {
+                "type": "string"
+              },
+              "number_of_rounds": {
+                "type": "number"
+              }
+            }
+          },
+          "funding_rounds": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string"
+                },
+                "series": {
+                  "type": "string"
+                },
+                "amount_usd": {
+                  "type": "string"
+                },
+                "number_of_investors": {
+                  "type": "number"
+                },
+                "lead_investor": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "investors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "stake_percentage": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "revenue_valuation": {
+            "type": "object",
+            "properties": {
+              "revenue_usd": {
+                "type": "string"
+              },
+              "growth_rate": {
+                "type": "string"
+              },
+              "latest_valuation_usd": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "battle_4_customers": {
+        "type": "object",
+        "properties": {
+          "b2c_segments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "age_range": {
+                  "type": "string"
+                },
+                "income_level": {
+                  "type": "string"
+                },
+                "educational_level": {
+                  "type": "string"
+                },
+                "interests_lifestyle": {
+                  "type": "string"
+                },
+                "behavior": {
+                  "type": "string"
+                },
+                "needs_pain_points": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "revenue_share_percentage": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "b2b_segments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "business_size": {
+                  "type": "string"
+                },
+                "industry": {
+                  "type": "string"
+                },
+                "revenue_of_targeted_company": {
+                  "type": "string"
+                },
+                "technographic": {
+                  "type": "string"
+                },
+                "behavior": {
+                  "type": "string"
+                },
+                "needs_pain_points": {
+                  "type": "string"
+                },
+                "revenue_share_percentage": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "reviews_overview": {
+            "type": "object",
+            "properties": {
+              "avg_rating": {
+                "type": "string"
+              },
+              "positive_percentage": {
+                "type": "string"
+              },
+              "negative_percentage": {
+                "type": "string"
+              },
+              "common_themes": {
+                "type": "string"
+              }
+            }
+          },
+          "pain_points": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "impact": {
+                  "type": "string"
+                },
+                "frequency": {
+                  "type": "string"
+                },
+                "suggested_fix": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "battle_5_partnerships": {
+        "type": "object",
+        "properties": {
+          "strategic_partners": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "start_date": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "key_suppliers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "commodity": {
+                  "type": "string"
+                },
+                "region": {
+                  "type": "string"
+                },
+                "contract_value": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "growth_rates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "period": {
+                  "type": "string"
+                },
+                "revenue_growth_percentage": {
+                  "type": "string"
+                },
+                "user_growth_percentage": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "expansions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "region_market": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "investment": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "company_name"
+    ]
+  }

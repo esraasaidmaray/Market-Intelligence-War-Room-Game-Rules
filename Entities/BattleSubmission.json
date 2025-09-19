@@ -1,0 +1,84 @@
+{
+    "name": "BattleSubmission",
+    "type": "object",
+    "properties": {
+      "match_id": {
+        "type": "string",
+        "description": "Match identifier"
+      },
+      "battle_id": {
+        "type": "string",
+        "description": "Battle identifier"
+      },
+      "team": {
+        "type": "string",
+        "enum": [
+          "Alpha",
+          "Delta"
+        ],
+        "description": "Submitting team"
+      },
+      "sub_team": {
+        "type": "string",
+        "description": "Sub-team identifier"
+      },
+      "submission_data": {
+        "type": "object",
+        "description": "Captured template data"
+      },
+      "submitted_at": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Submission timestamp"
+      },
+      "time_remaining": {
+        "type": "number",
+        "description": "Minutes remaining when submitted"
+      },
+      "sources": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "quality_score": {
+              "type": "number"
+            }
+          }
+        },
+        "default": []
+      },
+      "scores": {
+        "type": "object",
+        "properties": {
+          "data_accuracy": {
+            "type": "number"
+          },
+          "speed": {
+            "type": "number"
+          },
+          "source_quality": {
+            "type": "number"
+          },
+          "teamwork": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "required": [
+      "match_id",
+      "battle_id",
+      "team",
+      "sub_team",
+      "submission_data"
+    ]
+  }
