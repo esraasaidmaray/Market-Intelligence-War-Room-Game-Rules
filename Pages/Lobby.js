@@ -105,6 +105,30 @@ export default function Lobby() {
     }
   };
 
+  const assignSubTeam = async (player, subTeam) => {
+    if (!currentPlayer || currentPlayer.role !== "Leader" || currentPlayer.team !== player.team) return;
+    
+    try {
+      await Player.update(player.id, {
+        sub_team: subTeam,
+        status: "assigned"
+      });
+      
+      loadMatchData();
+    } catch (err) {
+      console.error("Failed to assign sub-team:", err);
+      setError("Failed to assign sub-team");
+    }
+  };
+
+  const getAvailableSubTeams = (team) => {
+    const usedSubTeams = players
+      .filter(p => p.team === team && p.sub_team)
+      .map(p => p.sub_team);
+    
+    return SUB_TEAMS[team].filter(subTeam => !usedSubTeams.includes(subTeam));
+  };
+
   const startMatch = async () => {
     if (!currentMatch.alpha_leader_ready || !currentMatch.delta_leader_ready) {
       setError("Both team leaders must be ready");
@@ -161,7 +185,8 @@ export default function Lobby() {
   const alphaLeader = getTeamLeader("Alpha");
   const deltaLeader = getTeamLeader("Delta");
   const isCurrentPlayerLeader = currentPlayer?.role === "Leader";
-  const canStart = currentMatch.alpha_leader_ready && currentMatch.delta_leader_ready && isCurrentPlayerLeader;
+  const allPlayersAssigned = players.filter(p => p.role === "Player").every(p => p.sub_team);
+  const canStart = currentMatch.alpha_leader_ready && currentMatch.delta_leader_ready && isCurrentPlayerLeader && allPlayersAssigned;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 p-4">
@@ -238,14 +263,30 @@ export default function Lobby() {
                 <div className="space-y-2">
                   <h4 className="text-white font-semibold">Operatives ({alphaPlayers.length})</h4>
                   {alphaPlayers.filter(p => p.role === "Player").map((player) => (
-                    <div key={player.id} className="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
-                      <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" />
-                      <span className="text-white">{player.name}</span>
-                      {player.sub_team && (
-                        <Badge variant="outline" className="border-cyan-500/30 text-cyan-400">
-                          {player.sub_team}
-                        </Badge>
-                      )}
+                    <div key={player.id} className="flex items-center justify-between gap-2 p-2 bg-gray-800/30 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" />
+                        <span className="text-white">{player.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {player.sub_team ? (
+                          <Badge variant="outline" className="border-cyan-500/30 text-cyan-400">
+                            {player.sub_team}
+                          </Badge>
+                        ) : (
+                          isCurrentPlayerLeader && currentPlayer.team === "Alpha" && (
+                            <select
+                              onChange={(e) => assignSubTeam(player, e.target.value)}
+                              className="text-xs bg-gray-700 text-white rounded px-2 py-1"
+                            >
+                              <option value="">Assign...</option>
+                              {getAvailableSubTeams("Alpha").map(subTeam => (
+                                <option key={subTeam} value={subTeam}>{subTeam}</option>
+                              ))}
+                            </select>
+                          )
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -282,14 +323,30 @@ export default function Lobby() {
                 <div className="space-y-2">
                   <h4 className="text-white font-semibold">Operatives ({deltaPlayers.length})</h4>
                   {deltaPlayers.filter(p => p.role === "Player").map((player) => (
-                    <div key={player.id} className="flex items-center gap-2 p-2 bg-gray-800/30 rounded">
-                      <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full" />
-                      <span className="text-white">{player.name}</span>
-                      {player.sub_team && (
-                        <Badge variant="outline" className="border-orange-500/30 text-orange-400">
-                          {player.sub_team}
-                        </Badge>
-                      )}
+                    <div key={player.id} className="flex items-center justify-between gap-2 p-2 bg-gray-800/30 rounded">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-red-500 rounded-full" />
+                        <span className="text-white">{player.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {player.sub_team ? (
+                          <Badge variant="outline" className="border-orange-500/30 text-orange-400">
+                            {player.sub_team}
+                          </Badge>
+                        ) : (
+                          isCurrentPlayerLeader && currentPlayer.team === "Delta" && (
+                            <select
+                              onChange={(e) => assignSubTeam(player, e.target.value)}
+                              className="text-xs bg-gray-700 text-white rounded px-2 py-1"
+                            >
+                              <option value="">Assign...</option>
+                              {getAvailableSubTeams("Delta").map(subTeam => (
+                                <option key={subTeam} value={subTeam}>{subTeam}</option>
+                              ))}
+                            </select>
+                          )
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -357,7 +414,7 @@ export default function Lobby() {
                   
                   {!canStart && currentMatch.alpha_leader_ready && currentMatch.delta_leader_ready && (
                     <p className="text-gray-400 text-sm">
-                      Waiting for team leaders to start the mission...
+                      {allPlayersAssigned ? "Waiting for team leaders to start the mission..." : "All players must be assigned to sub-teams before starting"}
                     </p>
                   )}
                 </div>

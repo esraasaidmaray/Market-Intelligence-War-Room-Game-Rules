@@ -3,6 +3,7 @@ import React from "react";
 // Complete Battle template configurations matching the provided Market Intelligence Capture Template
 export const BATTLE_TEMPLATES = {
   leadership_recon: {
+    id: "leadership_recon",
     name: "Leadership Recon & Market Dominance",
     description: "Intelligence gathering on company founders, key executives, and market positioning",
     fields: [
@@ -242,6 +243,7 @@ export const BATTLE_TEMPLATES = {
   },
 
   product_arsenal: {
+    id: "product_arsenal",
     name: "Product Arsenal & Social Signals Strike",
     description: "Analysis of company products, services, pricing, and social media presence",
     fields: [
@@ -459,6 +461,7 @@ export const BATTLE_TEMPLATES = {
   },
 
   funding_fortification: {
+    id: "funding_fortification",
     name: "Funding Fortification",
     description: "Financial intelligence on funding rounds, investors, revenue, and valuation",
     fields: [
@@ -663,6 +666,7 @@ export const BATTLE_TEMPLATES = {
   },
 
   customer_frontlines: {
+    id: "customer_frontlines",
     name: "Customer Frontlines",
     description: "Customer segment analysis, reviews, and pain point identification",
     fields: [
@@ -903,6 +907,7 @@ export const BATTLE_TEMPLATES = {
   },
 
   alliance_forge: {
+    id: "alliance_forge",
     name: "Alliance Forge & Growth Offensive",
     description: "Partnership ecosystem, supply chain analysis, and growth trajectory mapping",
     fields: [
