@@ -1,0 +1,59 @@
+name: market_intelligence_war_room
+description: A multiplayer, gamified, real-time mobile game for market intelligence competition
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # UI & Navigation
+  cupertino_icons: ^1.0.2
+  go_router: ^12.1.3
+  flutter_svg: ^2.0.9
+  
+  # State Management
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  
+  # HTTP & Data
+  http: ^1.1.2
+  dio: ^5.4.0
+  
+  # UI Components
+  flutter_animate: ^4.3.0
+  shimmer: ^3.0.0
+  lottie: ^2.7.0
+  
+  # Utils
+  intl: ^0.19.0
+  uuid: ^4.2.1
+  url_launcher: ^6.2.2
+  
+  # Icons
+  lucide_icons: ^0.294.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/animations/
+    - assets/data/
+  
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
