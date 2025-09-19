@@ -286,7 +286,10 @@ class _LobbyScreenState extends State<LobbyScreen> {
     final allPlayersAssigned = gameProvider.players
         .where((p) => p.role == 'Player')
         .every((p) => p.subTeam != null && p.subTeam!.isNotEmpty);
-    final canStart = gameProvider.currentMatch?.canStart ?? false;
+    final canStart = gameProvider.canStartMatch;
+    final alphaLeaderReady = gameProvider.alphaLeaderReady;
+    final deltaLeaderReady = gameProvider.deltaLeaderReady;
+    final selectedCompany = gameProvider.selectedCompany;
     
     return Container(
       padding: const EdgeInsets.all(24),
@@ -300,6 +303,127 @@ class _LobbyScreenState extends State<LobbyScreen> {
       ),
       child: Column(
         children: [
+          // Company Selection (Leaders only)
+          if (isCurrentPlayerLeader) ...[
+            Text(
+              'Company Selection',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: AppTheme.textWhite,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            
+            DropdownButtonFormField<String>(
+              value: selectedCompany,
+              decoration: InputDecoration(
+                labelText: 'Select Company',
+                labelStyle: TextStyle(color: AppTheme.textGray),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: AppTheme.borderGray),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: AppTheme.borderGray),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide(color: AppTheme.primaryCyan),
+                ),
+              ),
+              dropdownColor: AppTheme.backgroundDark,
+              style: TextStyle(color: AppTheme.textWhite),
+              items: [
+                'Apple Inc.',
+                'Microsoft Corporation',
+                'Amazon.com Inc.',
+                'Alphabet Inc. (Google)',
+                'Tesla Inc.',
+                'Meta Platforms Inc.',
+                'Netflix Inc.',
+                'Nike Inc.',
+                'Coca-Cola Company',
+                'McDonald\'s Corporation',
+                'Spotify Technology',
+                'Uber Technologies',
+                'Airbnb Inc.',
+                'Zoom Video Communications',
+                'Slack Technologies',
+              ].map((company) => DropdownMenuItem(
+                value: company,
+                child: Text(company),
+              )).toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  gameProvider.selectCompany(value);
+                }
+              },
+            ),
+            
+            const SizedBox(height: 24),
+          ],
+          
+          // Leader Ready Status
+          if (isCurrentPlayerLeader) ...[
+            Text(
+              'Leader Status',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: AppTheme.textWhite,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            
+            Row(
+              children: [
+                Expanded(
+                  child: _buildLeaderStatusCard(
+                    'Alpha Team',
+                    alphaLeaderReady,
+                    gameProvider.alphaLeader?.name ?? 'No Leader',
+                    AppTheme.primaryCyan,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: _buildLeaderStatusCard(
+                    'Delta Team',
+                    deltaLeaderReady,
+                    gameProvider.deltaLeader?.name ?? 'No Leader',
+                    AppTheme.primaryOrange,
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Ready Button
+            GradientButton(
+              onPressed: () {
+                gameProvider.setLeaderReady(true);
+              },
+              gradient: AppTheme.cyanBlueGradient,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(LucideIcons.check, color: Colors.white, size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    'MARK READY',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+          ],
+          
           if (isCurrentPlayerLeader) ...[
             // Leader Controls
             GradientButton(
@@ -414,5 +538,52 @@ class _LobbyScreenState extends State<LobbyScreen> {
         ],
       ),
     ).animate().fadeIn(delay: 1000.ms, duration: 800.ms).slideY(begin: 0.2);
+  }
+  
+  Widget _buildLeaderStatusCard(String teamName, bool isReady, String leaderName, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isReady ? color : color.withOpacity(0.3),
+          width: isReady ? 2 : 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          Text(
+            teamName,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: color,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Icon(
+            isReady ? LucideIcons.checkCircle : LucideIcons.clock,
+            color: isReady ? color : AppTheme.textGray,
+            size: 24,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            leaderName,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: AppTheme.textWhite,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            isReady ? 'Ready' : 'Not Ready',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: isReady ? color : AppTheme.textGray,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

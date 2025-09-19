@@ -39,10 +39,14 @@ class _BattleFormState extends State<BattleForm> {
   void _initializeFormData() {
     // Initialize form data based on battle type
     final battleId = _getBattleIdForPlayer();
-    final fields = _getFieldsForBattle(battleId);
+    final gameProvider = context.read<GameProvider>();
+    final template = gameProvider.battleTemplates[battleId];
     
-    for (final field in fields) {
-      _formData[field['id']] = '';
+    if (template != null) {
+      final fields = template['fields'] as Map<String, dynamic>;
+      for (final fieldName in fields.keys) {
+        _formData[fieldName] = '';
+      }
     }
   }
 
@@ -96,14 +100,18 @@ class _BattleFormState extends State<BattleForm> {
     final battleId = _getBattleIdForPlayer();
     final battleName = _getBattleName(battleId);
     final progress = _calculateProgress();
+    final gameProvider = context.watch<GameProvider>();
+    final isBattleCompleted = gameProvider.isBattleCompleted(battleId);
 
     return Container(
       decoration: BoxDecoration(
         color: AppTheme.backgroundGray.withOpacity(0.5),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppTheme.borderGray.withOpacity(0.5),
-          width: 1,
+          color: isBattleCompleted 
+              ? AppTheme.primaryGreen.withOpacity(0.5)
+              : AppTheme.borderGray.withOpacity(0.5),
+          width: isBattleCompleted ? 2 : 1,
         ),
       ),
       child: Column(
@@ -194,6 +202,41 @@ class _BattleFormState extends State<BattleForm> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    
+                    // Completion Status
+                    if (isBattleCompleted)
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryGreen.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppTheme.primaryGreen.withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              LucideIcons.checkCircle,
+                              color: AppTheme.primaryGreen,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Battle completed! You can now assist in other battles.',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: AppTheme.primaryGreen,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    
+                    if (isBattleCompleted) const SizedBox(height: 20),
 
                     // Form Fields
                     ..._getFieldsForBattle(battleId).map((field) {
@@ -206,36 +249,67 @@ class _BattleFormState extends State<BattleForm> {
                     const SizedBox(height: 20),
 
                     // Submit Button
-                    GradientButton(
-                      onPressed: _isSubmitting ? null : _submitForm,
-                      gradient: AppTheme.cyanBlueGradient,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (_isSubmitting) ...[
-                            const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
+                    if (!isBattleCompleted)
+                      GradientButton(
+                        onPressed: _isSubmitting ? null : _submitForm,
+                        gradient: AppTheme.cyanBlueGradient,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_isSubmitting) ...[
+                              const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.black,
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                            ] else ...[
+                              const Icon(LucideIcons.send, color: Colors.black, size: 20),
+                              const SizedBox(width: 8),
+                            ],
+                            Text(
+                              _isSubmitting ? 'Submitting...' : 'Submit Intelligence ($progress%)',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 color: Colors.black,
-                                strokeWidth: 2,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                          ] else ...[
-                            const Icon(LucideIcons.send, color: Colors.black, size: 20),
-                            const SizedBox(width: 8),
                           ],
-                          Text(
-                            _isSubmitting ? 'Submitting...' : 'Submit Intelligence ($progress%)',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryGreen.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppTheme.primaryGreen.withOpacity(0.3),
+                            width: 1,
                           ),
-                        ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              LucideIcons.checkCircle,
+                              color: AppTheme.primaryGreen,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'BATTLE COMPLETED',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: AppTheme.primaryGreen,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -363,36 +437,53 @@ class _BattleFormState extends State<BattleForm> {
       final gameProvider = context.read<GameProvider>();
       final battleId = _getBattleIdForPlayer();
       
+      // Validate all required fields are filled
+      final template = gameProvider.battleTemplates[battleId];
+      if (template == null) {
+        throw Exception('Battle template not found');
+      }
+      
+      final fields = template['fields'] as Map<String, dynamic>;
+      final missingFields = <String>[];
+      
+      for (final fieldName in fields.keys) {
+        final fieldConfig = fields[fieldName] as Map<String, dynamic>;
+        if (fieldConfig['required'] == true) {
+          final value = _formData[fieldName];
+          if (value == null || value.toString().trim().isEmpty) {
+            missingFields.add(fieldName);
+          }
+        }
+      }
+      
+      if (missingFields.isNotEmpty) {
+        throw Exception('All required fields must be filled: ${missingFields.join(', ')}');
+      }
+      
       // Extract source links
       final sources = <Map<String, dynamic>>[];
-      for (final field in _getFieldsForBattle(battleId)) {
-        if (field['type'] == 'url') {
-          final fieldId = field['id'] as String;
-          final url = _formData[fieldId];
+      for (final fieldName in fields.keys) {
+        final fieldConfig = fields[fieldName] as Map<String, dynamic>;
+        if (fieldConfig['type'] == 'url') {
+          final url = _formData[fieldName];
           if (url != null && url.toString().trim().isNotEmpty) {
             sources.add({
               'url': url,
-              'description': 'Source for ${field['label']}',
+              'description': 'Source for $fieldName',
               'quality_score': 0.0,
             });
           }
         }
       }
 
-      await gameProvider.submitBattleData(
-        battleId: battleId,
-        submissionData: _formData,
-        sources: sources.map((s) => Source(
-          url: s['url'],
-          description: s['description'],
-          qualityScore: s['quality_score'],
-        )).toList(),
-      );
-
+      // Submit battle data using the new method
+      gameProvider.submitBattleData(battleId, _formData);
+      
+      // Show success message
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Intelligence submitted successfully!'),
+          SnackBar(
+            content: Text('Battle data submitted successfully!'),
             backgroundColor: AppTheme.primaryGreen,
           ),
         );

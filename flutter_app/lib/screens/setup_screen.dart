@@ -30,6 +30,12 @@ class _SetupScreenState extends State<SetupScreen> {
   String _avatar = 'agent1';
   String _company = '';
   String _matchId = '';
+  
+  // Validation state
+  bool _isNameValid = false;
+  bool _isTeamValid = false;
+  bool _isRoleValid = false;
+  bool _isCompanyValid = false;
 
   final List<String> _companies = [
     'Apple Inc.',
@@ -204,24 +210,65 @@ class _SetupScreenState extends State<SetupScreen> {
         ),
         const SizedBox(height: 12),
         
-        Row(
-          children: [
-            Expanded(
-              child: _buildRoleButton(
-                'Leader',
-                AppTheme.yellowOrangeGradient,
-                LucideIcons.crown,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildRoleButton(
-                'Player',
-                AppTheme.greenEmeraldGradient,
-                LucideIcons.users,
-              ),
-            ),
-          ],
+        Consumer<GameProvider>(
+          builder: (context, gameProvider, child) {
+            final alphaLeader = gameProvider.alphaLeader;
+            final deltaLeader = gameProvider.deltaLeader;
+            
+            // Check if team already has a leader
+            final teamHasLeader = (_team == 'Alpha' && alphaLeader != null) || 
+                                 (_team == 'Delta' && deltaLeader != null);
+            
+            return Column(
+              children: [
+                if (teamHasLeader)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppTheme.primaryRed.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppTheme.primaryRed.withOpacity(0.3)),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(LucideIcons.alertCircle, color: AppTheme.primaryRed, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Team $_team already has a leader. You must select Player role.',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: AppTheme.primaryRed,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildRoleButton(
+                        'Leader',
+                        AppTheme.yellowOrangeGradient,
+                        LucideIcons.crown,
+                        disabled: teamHasLeader,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildRoleButton(
+                        'Player',
+                        AppTheme.greenEmeraldGradient,
+                        LucideIcons.users,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
         ),
         
         const SizedBox(height: 24),
@@ -457,21 +504,27 @@ class _SetupScreenState extends State<SetupScreen> {
     );
   }
 
-  Widget _buildRoleButton(String role, LinearGradient gradient, IconData icon) {
+  Widget _buildRoleButton(String role, LinearGradient gradient, IconData icon, {bool disabled = false}) {
     final isSelected = _role == role;
     
     return GestureDetector(
-      onTap: () => setState(() => _role = role),
+      onTap: disabled ? null : () => setState(() => _role = role),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          gradient: isSelected ? gradient : null,
-          color: isSelected ? null : AppTheme.backgroundGray.withOpacity(0.3),
+          gradient: isSelected && !disabled ? gradient : null,
+          color: isSelected && !disabled 
+              ? null 
+              : disabled 
+                  ? AppTheme.backgroundGray.withOpacity(0.1)
+                  : AppTheme.backgroundGray.withOpacity(0.3),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected 
+            color: isSelected && !disabled
                 ? Colors.transparent 
-                : AppTheme.borderGray.withOpacity(0.5),
+                : disabled
+                    ? AppTheme.borderGray.withOpacity(0.2)
+                    : AppTheme.borderGray.withOpacity(0.5),
             width: 1,
           ),
         ),
@@ -479,14 +532,18 @@ class _SetupScreenState extends State<SetupScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected ? Colors.black : AppTheme.textGray,
+              color: disabled 
+                  ? AppTheme.textGray.withOpacity(0.3)
+                  : isSelected ? Colors.black : AppTheme.textGray,
               size: 24,
             ),
             const SizedBox(height: 8),
             Text(
               role == 'Leader' ? 'Team Leader' : 'Operative',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: isSelected ? Colors.black : AppTheme.textWhite,
+                color: disabled
+                    ? AppTheme.textGray.withOpacity(0.3)
+                    : isSelected ? Colors.black : AppTheme.textWhite,
                 fontWeight: FontWeight.bold,
               ),
             ),

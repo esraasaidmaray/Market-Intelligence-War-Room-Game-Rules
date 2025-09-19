@@ -17,6 +17,16 @@ class GameProvider extends ChangeNotifier {
   List<BattleSubmission> _submissions = [];
   CompanyReference? _companyReference;
   
+  // Game requirements state
+  bool _alphaLeaderReady = false;
+  bool _deltaLeaderReady = false;
+  String? _selectedCompany;
+  Map<String, Map<String, dynamic>> _battleTemplates = {};
+  Map<String, bool> _battleCompletionStatus = {};
+  Map<String, Map<String, dynamic>> _battleSubmissions = {};
+  DateTime? _matchStartTime;
+  int _matchDurationMinutes = 60;
+  
   // Getters
   bool get isLoading => _isLoading;
   String get error => _error;
@@ -25,6 +35,26 @@ class GameProvider extends ChangeNotifier {
   List<Player> get players => _players;
   List<BattleSubmission> get submissions => _submissions;
   CompanyReference? get companyReference => _companyReference;
+  
+  // Game requirements getters
+  bool get alphaLeaderReady => _alphaLeaderReady;
+  bool get deltaLeaderReady => _deltaLeaderReady;
+  String? get selectedCompany => _selectedCompany;
+  Map<String, Map<String, dynamic>> get battleTemplates => _battleTemplates;
+  Map<String, bool> get battleCompletionStatus => _battleCompletionStatus;
+  Map<String, Map<String, dynamic>> get battleSubmissions => _battleSubmissions;
+  DateTime? get matchStartTime => _matchStartTime;
+  int get matchDurationMinutes => _matchDurationMinutes;
+  
+  // Computed getters
+  bool get canStartMatch => _alphaLeaderReady && _deltaLeaderReady && _selectedCompany != null;
+  bool get isMatchActive => _matchStartTime != null;
+  Duration? get timeRemaining {
+    if (_matchStartTime == null) return null;
+    final elapsed = DateTime.now().difference(_matchStartTime!);
+    final remaining = Duration(minutes: _matchDurationMinutes) - elapsed;
+    return remaining.isNegative ? Duration.zero : remaining;
+  }
   
   // Team getters
   List<Player> get alphaPlayers => _players.where((p) => p.team == 'Alpha').toList();
@@ -48,6 +78,8 @@ class GameProvider extends ChangeNotifier {
     try {
       // Load sample company reference data
       await _loadCompanyReference();
+      // Initialize battle templates
+      _initializeBattleTemplates();
       _clearError();
     } catch (e) {
       _setError('Failed to initialize game: $e');
@@ -435,6 +467,231 @@ class GameProvider extends ChangeNotifier {
     if (now.isAfter(endTime)) return 0;
     
     return endTime.difference(now).inMinutes;
+  }
+  
+  // Game requirements methods
+  void _initializeBattleTemplates() {
+    _battleTemplates = {
+      'battle1': {
+        'name': 'Leadership Recon',
+        'fields': {
+          'founders': {'required': true, 'weight': 12.0, 'type': 'text'},
+          'key_executives': {'required': true, 'weight': 18.0, 'type': 'text'},
+          'market_share': {'required': true, 'weight': 20.0, 'type': 'percentage'},
+          'geographic_footprint': {'required': true, 'weight': 10.0, 'type': 'text'},
+        }
+      },
+      'battle2': {
+        'name': 'Product Arsenal',
+        'fields': {
+          'product_lines': {'required': true, 'weight': 30.0, 'type': 'text'},
+          'pricing': {'required': true, 'weight': 15.0, 'type': 'number'},
+          'social_presence': {'required': true, 'weight': 20.0, 'type': 'text'},
+          'influencers': {'required': true, 'weight': 15.0, 'type': 'text'},
+        }
+      },
+      'battle3': {
+        'name': 'Funding Fortification',
+        'fields': {
+          'funding': {'required': true, 'weight': 40.0, 'type': 'number'},
+          'investors': {'required': true, 'weight': 20.0, 'type': 'text'},
+          'revenue': {'required': true, 'weight': 25.0, 'type': 'number'},
+          'citations': {'required': true, 'weight': 15.0, 'type': 'url'},
+        }
+      },
+      'battle4': {
+        'name': 'Customer Frontlines',
+        'fields': {
+          'b2c': {'required': true, 'weight': 25.0, 'type': 'text'},
+          'b2b': {'required': true, 'weight': 25.0, 'type': 'text'},
+          'reviews': {'required': true, 'weight': 25.0, 'type': 'number'},
+          'citations': {'required': true, 'weight': 25.0, 'type': 'url'},
+        }
+      },
+      'battle5': {
+        'name': 'Alliance Forge',
+        'fields': {
+          'partners': {'required': true, 'weight': 25.0, 'type': 'text'},
+          'suppliers': {'required': true, 'weight': 20.0, 'type': 'text'},
+          'growth': {'required': true, 'weight': 25.0, 'type': 'percentage'},
+          'expansions': {'required': true, 'weight': 15.0, 'type': 'text'},
+          'citations': {'required': true, 'weight': 15.0, 'type': 'url'},
+        }
+      },
+    };
+  }
+  
+  // Company selection (only for leaders)
+  void selectCompany(String company) {
+    if (_currentPlayer?.role != 'Leader') {
+      _setError('Only team leaders can select companies');
+      return;
+    }
+    _selectedCompany = company;
+    notifyListeners();
+  }
+  
+  // Leader ready status
+  void setLeaderReady(bool ready) {
+    if (_currentPlayer?.role != 'Leader') {
+      _setError('Only team leaders can set ready status');
+      return;
+    }
+    
+    if (_currentPlayer?.team == 'Alpha') {
+      _alphaLeaderReady = ready;
+    } else if (_currentPlayer?.team == 'Delta') {
+      _deltaLeaderReady = ready;
+    }
+    notifyListeners();
+  }
+  
+  // Start match (both leaders must be ready)
+  void startMatch() {
+    if (!canStartMatch) {
+      _setError('Both team leaders must be ready and company must be selected');
+      return;
+    }
+    
+    _matchStartTime = DateTime.now();
+    _initializeBattleSubmissions();
+    notifyListeners();
+  }
+  
+  // Initialize battle submissions for all players
+  void _initializeBattleSubmissions() {
+    _battleSubmissions.clear();
+    _battleCompletionStatus.clear();
+    
+    for (final player in _players) {
+      for (final battleId in _battleTemplates.keys) {
+        final key = '${player.id}_$battleId';
+        _battleSubmissions[key] = {};
+        _battleCompletionStatus[key] = false;
+      }
+    }
+  }
+  
+  // Submit battle data
+  void submitBattleData(String battleId, Map<String, dynamic> data) {
+    if (_currentPlayer == null) return;
+    
+    final key = '${_currentPlayer!.id}_$battleId';
+    
+    // Validate all required fields are filled
+    final template = _battleTemplates[battleId];
+    if (template == null) return;
+    
+    final fields = template['fields'] as Map<String, dynamic>;
+    bool allRequiredFieldsFilled = true;
+    
+    for (final fieldName in fields.keys) {
+      final fieldConfig = fields[fieldName] as Map<String, dynamic>;
+      if (fieldConfig['required'] == true) {
+        if (!data.containsKey(fieldName) || data[fieldName] == null || data[fieldName].toString().isEmpty) {
+          allRequiredFieldsFilled = false;
+          break;
+        }
+      }
+    }
+    
+    if (!allRequiredFieldsFilled) {
+      _setError('All required fields must be filled before submission');
+      return;
+    }
+    
+    _battleSubmissions[key] = data;
+    _battleCompletionStatus[key] = true;
+    notifyListeners();
+  }
+  
+  // Check if player can leave current battle
+  bool canLeaveBattle(String battleId) {
+    if (_currentPlayer == null) return false;
+    
+    final key = '${_currentPlayer!.id}_$battleId';
+    return _battleCompletionStatus[key] == true;
+  }
+  
+  // Get battle completion status for player
+  bool isBattleCompleted(String battleId) {
+    if (_currentPlayer == null) return false;
+    
+    final key = '${_currentPlayer!.id}_$battleId';
+    return _battleCompletionStatus[key] == true;
+  }
+  
+  // Calculate scoring (exact algorithm as specified)
+  Map<String, double> calculateBattleScore(String battleId, Map<String, dynamic> submittedData) {
+    final template = _battleTemplates[battleId];
+    if (template == null) return {};
+    
+    final fields = template['fields'] as Map<String, dynamic>;
+    double dataAccuracy = 0.0;
+    double speed = 0.0;
+    double sourceLink = 0.0;
+    double teamwork = 0.0;
+    
+    // Data Accuracy (60%)
+    double totalWeight = 0.0;
+    double totalScore = 0.0;
+    
+    for (final fieldName in fields.keys) {
+      final fieldConfig = fields[fieldName] as Map<String, dynamic>;
+      final weight = fieldConfig['weight'] as double;
+      totalWeight += weight;
+      
+      // Simple scoring for now - in production this would use the scoring service
+      final submittedValue = submittedData[fieldName]?.toString() ?? '';
+      final matchScore = submittedValue.isNotEmpty ? 1.0 : 0.0;
+      totalScore += matchScore * weight;
+    }
+    
+    dataAccuracy = totalWeight > 0 ? (totalScore / totalWeight) * 60.0 : 0.0;
+    
+    // Speed (10%)
+    if (_matchStartTime != null) {
+      final elapsed = DateTime.now().difference(_matchStartTime!);
+      final timeLeft = Duration(minutes: _matchDurationMinutes) - elapsed;
+      speed = timeLeft.isNegative ? 0.0 : (timeLeft.inMinutes / _matchDurationMinutes) * 10.0;
+    }
+    
+    // Source Link (15%) - simplified for now
+    sourceLink = 15.0; // Would be calculated based on source validation
+    
+    // Teamwork (15%) - simplified for now
+    teamwork = 15.0; // Would be calculated based on collaboration metrics
+    
+    return {
+      'dataAccuracy': dataAccuracy,
+      'speed': speed,
+      'sourceLink': sourceLink,
+      'teamwork': teamwork,
+      'total': dataAccuracy + speed + sourceLink + teamwork,
+    };
+  }
+  
+  // Check if team has won (95% threshold)
+  bool hasTeamWon(String team) {
+    final teamPlayers = _players.where((p) => p.team == team).toList();
+    double totalScore = 0.0;
+    int completedBattles = 0;
+    
+    for (final player in teamPlayers) {
+      for (final battleId in _battleTemplates.keys) {
+        final key = '${player.id}_$battleId';
+        if (_battleCompletionStatus[key] == true && _battleSubmissions.containsKey(key)) {
+          final score = calculateBattleScore(battleId, _battleSubmissions[key]!);
+          totalScore += score['total'] ?? 0.0;
+          completedBattles++;
+        }
+      }
+    }
+    
+    if (completedBattles == 0) return false;
+    
+    final averageScore = totalScore / completedBattles;
+    return averageScore >= 95.0; // 95% threshold
   }
   
   // Utility methods

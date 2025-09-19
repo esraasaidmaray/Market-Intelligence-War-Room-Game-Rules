@@ -1,0 +1,245 @@
+{
+  "company": {
+    "name": "Ezz Steel",
+    "overview": {
+      "description": "Egypt's and the Middle East's largest steel producer with a 43% market share and exports to 50+ countries.",
+      "plants": 4,
+      "capacity_million_tons": 7,
+      "products_split": { "rebar": 5, "flat_steel": 2 },
+      "dri_rank": "World's 2nd largest user of DRI technology with electric arc furnaces",
+      "mega_projects": ["New Administrative Capital"],
+      "h1_2024_revenue_usd": 2.02,
+      "ownership": "66.4% majority owned by Ahmed Ezz after voluntary delisting from the stock market in March 2025",
+      "challenges": ["dependence on imported raw materials", "high energy costs", "EU anti-dumping duties"],
+      "strategy": ["higher quality", "sustainability", "export expansion"]
+    }
+  },
+  "leadership_and_ownership": {
+    "founders": {
+      "company": "Ezz Steel Company S.A.E.",
+      "founding_year": 1994,
+      "current_role": "Hassan Ahmed Nouh — Chairman & Managing Director / CEO (since Nov 2024)",
+      "previous_ventures": "Ahmed Ezz",
+      "contact_email": "anabil@ezzsteel.com",
+      "linkedin": "https://www.linkedin.com/company/ezzsteel/",
+      "shareholders": [
+        { "name": "Ahmed Abdel Aziz Ezz", "shares": 364047977, "percentage": 66.45 },
+        { "name": "Al Ezz Family", "shares": 333873459, "percentage": 61.56 },
+        { "name": "Bank of New York Mellon (GDRs)", "percentage": 6.75 },
+        { "name": "Other unnamed shareholders", "percentage": 31.69 }
+      ]
+    },
+    "key_executives": [
+      {
+        "name": "Hassan Ahmed Nouh",
+        "title": "Chairman and Managing Director (CEO)",
+        "function": "Oversees overall strategy, daily operations, production efficiency, and executive decisions",
+        "years_with_firm": 21,
+        "linkedin": "https://eg.linkedin.com/in/hassan-nouh-9a5595145"
+      },
+      {
+        "name": "Raed El-Beblawy",
+        "title": "Board Member (Non-Executive Director)",
+        "function": "Provides governance oversight on business affairs; MD at Al Ezz Dekheila Steel (EZDK)",
+        "linkedin": "https://www.linkedin.com/in/raed-beblawy-353ba4163/"
+      },
+      {
+        "name": "Gamil Iskander",
+        "title": "Board Member (Non-Executive Director, Engineer)",
+        "function": "Technical expertise to projects and compliance"
+      },
+      {
+        "name": "Fayez Aly",
+        "title": "Board Member (Non-Executive Director, Engineer)",
+        "function": "Operational efficiency, technical compliance, risk management"
+      },
+      {
+        "name": "Hala Bassiouny",
+        "title": "Board Member (Non-Executive Director)",
+        "function": "Corporate finance, risk assessment, and compliance as Group Treasury Chief Officer",
+        "linkedin": "https://eg.linkedin.com/in/hala-bassiouni-512614b"
+      }
+    ]
+  },
+  "market": {
+    "size": { "TAM": 45.07, "SAM": 3.51, "SOM": 2.24, "growth_rate_percent": 3.09 },
+    "competitive_position": {
+      "rank": 1,
+      "market_share": { "overall": "50-60%", "long": "70%", "rebar": "68%" }
+    },
+    "geographic_footprint": [
+      {
+        "name": "Headquarters",
+        "location": "Garden City, Cairo, Egypt",
+        "opened": 1994,
+        "type": "Corporate Headquarters"
+      },
+      {
+        "name": "Sadat City Steelmaking Plant",
+        "location": "Sadat City, Menoufia, Egypt",
+        "opened": 1994,
+        "type": "Mini-Mill/Production Plant"
+      },
+      {
+        "name": "Al Ezz Rolling Mills",
+        "location": "10th of Ramadan City, Sharqia, Egypt",
+        "opened": 1995,
+        "type": "Rolling Mill"
+      },
+      {
+        "name": "Al Ezz Dekheila Steel (EZDK)",
+        "location": "El Dekheila Port, Alexandria, Egypt",
+        "opened": 2002,
+        "type": "Integrated Steelmaking Plant"
+      },
+      {
+        "name": "EZDK Administrative Office",
+        "location": "Mohandeseen, Giza, Egypt"
+      },
+      {
+        "name": "Suez Steelmaking Plant (EFS)",
+        "location": "Suez, Egypt",
+        "opened": 2007,
+        "type": "Steelmaking Plant"
+      },
+      {
+        "name": "Borg El Arab Branch",
+        "location": "Borg El Arab, Alexandria, Egypt"
+      }
+    ]
+  },
+  "products": {
+    "lines": [
+      { "name": "Rebar", "category": "Long Products", "price_egp": 38200 },
+      { "name": "Wire Rod", "category": "Long Products", "price_egp": 38200 },
+      { "name": "Hot-Rolled Flat Steel (HRC)", "category": "Flat Products", "price_egp": 39500 },
+      { "name": "Welded Steel Fabric", "category": "Construction Reinforcement", "price_egp": 8000 }
+    ],
+    "pricing_changes": [
+      {
+        "date": "2025-01-20",
+        "product": "Rebar",
+        "old_price": 38200,
+        "new_price": 38540,
+        "reason": "Global demand recovery and supply adjustments"
+      },
+      {
+        "date": "2025-09-15",
+        "product": "Flat steel",
+        "old_price": 37000,
+        "new_price": 39500,
+        "reason": "Rising raw material costs and supply chain pressures"
+      }
+    ]
+  },
+  "social_presence": {
+    "platforms": [
+      { "name": "Facebook", "link": "https://www.facebook.com/ezzsteelmen", "followers": 26576 },
+      { "name": "Facebook", "link": "https://www.facebook.com/ezzsteelofficial/", "followers": 5145 },
+      { "name": "LinkedIn", "link": "https://www.linkedin.com/company/ezzsteel", "followers": 28617 },
+      { "name": "YouTube", "link": "https://www.youtube.com/@ezzsteel_OFFICIAL", "followers": 61200 }
+    ]
+  },
+  "funding": {
+    "public_status": "Delisted from EGX in March 2025",
+    "financing_sources": ["Shareholders equity", "Reinvested profits", "Bank loans", "Bond/share issuance"],
+    "investors": [
+      { "name": "Ahmed Ezz", "stake_percent": 66.4 },
+      { "name": "Bank of New York Mellon", "stake_percent": 5.823 },
+      { "name": "Jamal Abdel Qader", "stake_percent": 5.16 },
+      { "name": "Act Financial Consulting", "stake_percent": 1.305 }
+    ],
+    "revenue": { "h1_2024_usd_billion": 2.02, "growth_yoy_percent": 62, "full_year_2023_usd_billion": 4.7 },
+    "valuation": "~$1.5 billion (March 2025 at delisting)"
+  },
+  "customers": {
+    "b2c": [
+      {
+        "persona": "Small Contractor",
+        "age": "30-50",
+        "income": "Medium-High",
+        "needs": ["price stability", "fast delivery"],
+        "revenue_share": 30
+      },
+      {
+        "persona": "Large Real Estate Developer",
+        "age": "35-60",
+        "income": "Very High",
+        "needs": ["high quality", "on-time delivery"],
+        "revenue_share": 60
+      }
+    ],
+    "b2b": [
+      {
+        "segment": "Medium Contractors",
+        "size_employees": "50-200",
+        "revenue_egp_m": "10-100",
+        "needs": ["price stability", "liquidity"],
+        "revenue_share": "25-30%"
+      },
+      {
+        "segment": "Large Developers",
+        "size_employees": "500+",
+        "needs": ["consistent quality", "on-time delivery"],
+        "revenue_share": "60-65%"
+      }
+    ],
+    "reviews": {
+      "average_rating": 3.5,
+      "positive_percent": 70,
+      "negative_percent": 30,
+      "positives": ["High-quality products", "reliable supply"],
+      "negatives": ["pricing issues", "weak management"]
+    },
+    "pain_points": [
+      {
+        "name": "High and Volatile Pricing",
+        "impact": "Cost increases 10-20%, stock drops 9.33%",
+        "frequency": "Frequent",
+        "fix": "Long-term contracts and predictive maintenance"
+      },
+      {
+        "name": "Production Disruptions and Supply Shortages",
+        "impact": "Loss of export markets, cost +15-30%",
+        "frequency": "Occasional to frequent",
+        "fix": "Diversify supply chains, invest in energy efficiency"
+      }
+    ]
+  },
+  "partnerships_and_supply_chain": {
+    "strategic_partners": [],
+    "key_suppliers": [
+      {
+        "name": "International Scrap Metal Brokers",
+        "commodity": "High-grade steel scrap",
+        "region": "Global"
+      },
+      {
+        "name": "Egyptian Natural Gas Companies",
+        "commodity": "Natural gas",
+        "region": "Egypt"
+      }
+    ]
+  },
+  "growth": {
+    "recent_growth": [
+      { "period": "H1 2024", "revenue_growth_percent": 62 },
+      { "period": "Q1 2024", "revenue_growth_percent": 25 },
+      { "period": "Full Year 2024", "revenue_growth_percent": "30-40" }
+    ],
+    "expansions": [
+      {
+        "type": "Capacity Increase",
+        "region": "Egypt",
+        "date": "2025-2026",
+        "investment_usd_m": "200-300"
+      },
+      {
+        "type": "Eco-Friendly Steel",
+        "region": "Europe & Asia",
+        "date": "2026-2027",
+        "investment_usd_m": "100-150"
+      }
+    ]
+  }
+}
